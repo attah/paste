@@ -18,7 +18,7 @@ function renderHTML(paste) {
     const expirationDate = (pasteText) ? new Date(new Date(paste.createdAt).getTime() + paste.expiration*1000) : ''
     let expiresIn = (pasteText) ? (expirationDate - Date.now())/1000 : ''
     Object.keys(seconds).forEach(key => {
-        if(pasteText && expiresIn/seconds[key] >= 1) 
+        if(pasteText && expiresIn/seconds[key] >= 1)
             expiresIn = `${Math.round(expiresIn/seconds[key])} ${key.toLowerCase()}s`
     })
 
@@ -101,7 +101,7 @@ function renderHTML(paste) {
                     h2 {
                         margin: 0;
                     }
-                    
+
                     select, input[type="text"] {
                         color: #b8b8b8;
                         background-color: #101010;
@@ -133,7 +133,7 @@ function renderHTML(paste) {
                 <form action="/" method="post">
                     ${pasteText && `<h2>${pasteTitle || 'Untitled'}</h2>`}
                     <textarea name="text" placeholder="Paste your text..." ${readOnly} spellcheck="false" required>${pasteText}</textarea>
-                    ${pasteText ? `<p>Paste was created in ${country} at <span style="text-decoration: underline;text-decoration_-style: dotted;" title="${new Date(createdAt).toLocaleString('en-us', { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone })}">${createdAt}</span>, expires in ${expiresIn} and has ${pasteSize} kb | <a href="/raw/${paste.uuid}">raw</a></p>` 
+                    ${pasteText ? `<p>Paste was created in ${country} at <span style="text-decoration: underline;text-decoration_-style: dotted;" title="${new Date(createdAt).toLocaleString('en-us', { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone })}">${createdAt}</span>, expires in ${expiresIn} and has ${pasteSize} kb | <a href="/raw/${paste.uuid}">raw</a></p>`
                     :  `<div id='information'><input type='text' name='title' placeholder='Paste Title'><select name='expiration' required><option disabled selected value=''>Select expiration</option><option value='${seconds.HOUR}'>1 Hour</option><option value='${seconds.DAY}'>1 Day</option><option value='${seconds.WEEK}'>1 Week</option><option value='${seconds.MONTH}'>1 Month</option><option value='${seconds.YEAR}'>1 Year</option></select><button>Create paste</button></div>`
                     }
                 </form>
@@ -171,6 +171,9 @@ async function handleRequest(request) {
     let body = {}
 
   if (pathname === "/") {
+    return new Response(renderError({message: "Nope"}),  {headers: { "Content-Type": "text/html;charset=utf8" }});
+  }
+  else if (pathname === "/paste") {
       if(request.method === "GET") {
         return new Response(renderHTML({}), {headers: { "Content-Type": "text/html;charset=utf8" }});
       }
